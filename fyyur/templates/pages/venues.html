@@ -1,0 +1,62 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Fyyur | Venues{% endblock %}
+{% block content %}
+{% for area in areas %}
+<style>
+.delete-button {
+	margin-left: 1rem;
+	box-shadow: 3px 4px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:10px;
+	border:1px solid #d02718;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Times New Roman;
+	font-size:10px;
+	padding:5px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #810e05;
+}
+.delete-button:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.delete-button:active {
+	position:relative;
+	top:1px;
+}
+</style>
+
+<h3>{{ area.city }}, {{ area.state }}</h3>
+	<ul class="items" id="venue_list">
+		{% for venue in area.venues %}
+		<li id="{{ venue.id }}">			
+			<h5>
+				<div class="item">
+					<i class="fas fa-music"></i>
+					<a href="/venues/{{ venue.id }}">{{ venue.name }}</a>
+					<button class="delete-button" data-id={{ venue.id }}>&cross;</button>
+				</div>								
+			</h5>						
+		</li>
+		{% endfor %}
+	</ul>
+{% endfor %}
+<script>
+	const delBtns = document.querySelectorAll('.delete-button')
+    delBtns.forEach(delBtn => {
+        delBtn.onclick = function(e){
+          const venue_id = e.target.dataset.id;
+          fetch('/venues/' + venue_id,{
+            method:'DELETE'
+          })
+          .then(response => response.json())
+          .then(() => {			
+            window.location.replace("/");			
+          });
+        }
+    });	
+</script>
+{% endblock %}
